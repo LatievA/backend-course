@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>City Insights</h1>
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Enter city name...">
+            <button onclick="fetchData()">Get Data</button>
+        </div>
+
+        <div id="results" class="hidden">
+            <section class="card weather-card">
+                <h2>Weather in <span id="cityName"></span></h2>
+                <div id="weatherContent"></div>
+            </section>
+            
+            <section class="card news-card">
+                <h2>Latest Local News</h2>
+                <div id="newsContent"></div>
+            </section>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
