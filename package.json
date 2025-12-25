@@ -1,25 +1,19 @@
 {
-  "name": "backend-course",
+  "name": "assignment_2",
   "version": "1.0.0",
-  "description": "Node.js backend course",
-  "main": "server.js",
+  "description": "",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LatievA/backend-course.git"
-  },
   "keywords": ["express", "api", "crud"],
-  "author": "",
+  "author": "Abylay Latiyev",
   "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/LatievA/backend-course/issues"
-  },
-  "homepage": "https://github.com/LatievA/backend-course#readme",
   "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1"
   }
 }
