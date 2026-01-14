@@ -6,7 +6,7 @@ const Workout = require('../models/Workout');
 
 const router = express.Router();
 
-// POST /api/exercises - create and push to workout.exercises
+// POST /api/exercises - create exercise
 router.post('/',
   [
     body('name').isString().notEmpty(),
@@ -35,7 +35,7 @@ router.post('/',
   }
 );
 
-// GET /api/exercises - list
+// GET /api/exercises - get all exercises
 router.get('/', async (req, res, next) => {
   try {
     const items = await Exercise.find().populate('workout').sort({ createdAt: -1 });
@@ -43,7 +43,7 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// GET /api/exercises/:id
+// GET /api/exercises/:id - get exercise by id
 router.get('/:id', async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: 'Invalid ID' });
@@ -53,7 +53,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// PUT /api/exercises/:id
+// PUT /api/exercises/:id - update exercise by id
 router.put('/:id',
   [
     body('name').optional().isString().notEmpty(),
@@ -73,7 +73,7 @@ router.put('/:id',
   }
 );
 
-// DELETE /api/exercises/:id
+// DELETE /api/exercises/:id - delete exercise by id
 router.delete('/:id', async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: 'Invalid ID' });

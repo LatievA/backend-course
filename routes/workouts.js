@@ -6,7 +6,7 @@ const Exercise = require('../models/Exercise');
 
 const router = express.Router();
 
-// POST /api/workouts  - create
+// POST /api/workouts  - create workout
 router.post('/',
   [
     body('title').isString().notEmpty(),
@@ -26,7 +26,7 @@ router.post('/',
   }
 );
 
-// GET /api/workouts - list (populate exercises)
+// GET /api/workouts - get all workouts
 router.get('/', async (req, res, next) => {
   try {
     const list = await Workout.find().populate('exercises').sort({ createdAt: -1 });
@@ -34,7 +34,7 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// GET /api/workouts/:id - single
+// GET /api/workouts/:id - get workout by id
 router.get('/:id', async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: 'Invalid ID' });
@@ -44,7 +44,7 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// PUT /api/workouts/:id - update
+// PUT /api/workouts/:id - update workout by id
 router.put('/:id',
   [
     body('title').optional().isString().notEmpty(),
@@ -65,7 +65,7 @@ router.put('/:id',
   }
 );
 
-// DELETE /api/workouts/:id - remove (also remove exercises)
+// DELETE /api/workouts/:id - delete workout by id (also remove exercises)
 router.delete('/:id', async (req, res, next) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: 'Invalid ID' });
