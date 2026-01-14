@@ -2,70 +2,140 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Workouts - Assignment 3</title>
+  <title>Workouts – Assignment 3</title>
   <style>
     body { font-family: Arial; padding: 20px; }
-    input, select, textarea { display:block; margin:6px 0 12px; width:300px; }
-    .workout { border:1px solid #ddd; padding:8px; margin-bottom:8px; border-radius:6px; }
+    input, select, textarea, button {
+      display: block;
+      margin: 6px 0 12px;
+    }
+    .workout {
+      border: 1px solid #ddd;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+    }
+    .exercise {
+      margin-left: 20px;
+      padding: 6px;
+      border-left: 3px solid #ccc;
+    }
+    small { color: #666; }
   </style>
 </head>
 <body>
-  <h1>Workouts</h1>
 
-  <form id="createForm">
-    <label>Title <input name="title" required></label>
-    <label>Duration (minutes) <input name="duration" type="number" required></label>
-    <label>Difficulty
-      <select name="difficulty" required>
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advanced</option>
-      </select>
-    </label>
-    <label>Description <textarea name="description"></textarea></label>
-    <button type="submit">Create Workout</button>
-  </form>
+<h1>Workouts</h1>
 
-  <h2>Workouts list</h2>
-  <div id="list"></div>
+<!-- CREATE WORKOUT -->
+<form id="createWorkoutForm">
+  <h3>Create Workout</h3>
+  <input name="title" placeholder="Title" required>
+  <input name="duration" type="number" placeholder="Duration (min)" required>
+  <select name="difficulty">
+    <option>Beginner</option>
+    <option>Intermediate</option>
+    <option>Advanced</option>
+  </select>
+  <textarea name="description" placeholder="Description"></textarea>
+  <button>Create Workout</button>
+</form>
+
+<hr>
+
+<div id="workouts"></div>
 
 <script>
-const api = '/api/workouts';
+const workoutsApi = '/api/workouts';
+const exercisesApi = '/api/exercises';
 
-async function load() {
-  const res = await fetch(api);
-  const data = await res.json();
-  const container = document.getElementById('list');
-  container.innerHTML = data.map(w => `
-    <div class="workout">
-      <strong>${w.title}</strong> — ${w.duration} min — ${w.difficulty}<br/>
-      <small>Created: ${new Date(w.createdAt).toLocaleString()}</small>
+/* LOAD WORKOUTS */
+async function loadWorkouts() {
+  const res = await fetch(workoutsApi);
+  const workouts = await res.json();
+
+  const container = document.getElementById('workouts');
+  container.innerHTML = '';
+
+  workouts.forEach(w => {
+    const div = document.createElement('div');
+    div.className = 'workout';
+
+    div.innerHTML = `
+      <strong>${w.title}</strong> (${w.difficulty}) — ${w.duration} min<br>
+      <small>${new Date(w.createdAt).toLocaleString()}</small>
       <p>${w.description || ''}</p>
-      <div>Exercises: ${w.exercises?.length || 0}</div>
-    </div>
-  `).join('');
+
+      <h4>Exercises</h4>
+      <div>
+        ${(w.exercises || []).map(ex => `
+          <div class="exercise">
+            ${ex.name} — ${ex.sets} x ${ex.reps}
+            <button onclick="deleteExercise('${ex._id}')">Delete</button>
+          </div>
+        `).join('')}
+      </div>
+
+      <h4>Add Exercise</h4>
+      <form onsubmit="createExercise(event, '${w._id}')">
+        <input name="name" placeholder="Exercise name" required>
+        <input name="sets" type="number" placeholder="Sets" required>
+        <input name="reps" type="number" placeholder="Reps" required>
+        <button>Add Exercise</button>
+      </form>
+    `;
+
+    container.appendChild(div);
+  });
 }
 
-document.getElementById('createForm').addEventListener('submit', async (e) => {
+/* CREATE WORKOUT */
+document.getElementById('createWorkoutForm').addEventListener('submit', async e => {
   e.preventDefault();
   const fd = new FormData(e.target);
-  const body = {
-    title: fd.get('title'),
-    duration: Number(fd.get('duration')),
-    difficulty: fd.get('difficulty'),
-    description: fd.get('description')
-  };
-  const res = await fetch(api, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  if (res.status === 201) {
-    e.target.reset();
-    load();
-  } else {
-    const err = await res.json();
-    alert('Error: ' + (err.message || JSON.stringify(err)));
-  }
+
+  await fetch(workoutsApi, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: fd.get('title'),
+      duration: Number(fd.get('duration')),
+      difficulty: fd.get('difficulty'),
+      description: fd.get('description')
+    })
+  });
+
+  e.target.reset();
+  loadWorkouts();
 });
 
-load();
+/* CREATE EXERCISE */
+async function createExercise(e, workoutId) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+
+  await fetch(exercisesApi, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: fd.get('name'),
+      sets: Number(fd.get('sets')),
+      reps: Number(fd.get('reps')),
+      workout: workoutId
+    })
+  });
+
+  loadWorkouts();
+}
+
+/* DELETE EXERCISE */
+async function deleteExercise(id) {
+  await fetch(`${exercisesApi}/${id}`, { method: 'DELETE' });
+  loadWorkouts();
+}
+
+loadWorkouts();
 </script>
+
 </body>
 </html>
