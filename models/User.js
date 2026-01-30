@@ -8,15 +8,14 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Hash password before save
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+UserSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
   this.password = await bcrypt.hash(this.password, saltRounds);
-  next();
 });
 
 // Instance method to compare password
-UserSchema.methods.comparePassword = function(candidate) {
+UserSchema.methods.comparePassword = function (candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 

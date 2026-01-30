@@ -1,4 +1,4 @@
-# Assignment 3
+# Assignment 4
 
 ## How to run
 
@@ -11,31 +11,47 @@ Now you can send requests to the localhost:3000
 
 ## API Endpoints
 
+### Auth Endpoints
+
+`POST api/auth/register`    Create a new user
+
+`POST api/auth/login`       Login into existing account
+
 ### Workout Endpoints
 
-`POST api/workouts`         Create a new workout
+`POST api/workouts`         Create a new workout (Admin role only)
 
 `GET api/workouts`          Get all workouts (without limiting !)
 
 `GET api/workouts/:id`      Get one workout by id
 
-`PUT api/workouts/:id`      Update one workout by id
+`PUT api/workouts/:id`      Update one workout by id (Admin role only)
 
-`DELETE api/workouts/:id`   Delete one workout by id
+`DELETE api/workouts/:id`   Delete one workout by id (Admin role only)
 
 ### Exercise Endpoints
 
-`POST api/exercises`         Create a new exercise
+`POST api/exercises`         Create a new exercise (Admin role only)
 
 `GET api/exercises`          Get all exercises (also without limiting !)
 
 `GET api/exercises/:id`      Get one exercise by id
 
-`PUT api/exercises/:id`      Update one exercise by id
+`PUT api/exercises/:id`      Update one exercise by id (Admin role only)
 
-`DELETE api/exercises:id`    Delete one exercise by id
+`DELETE api/exercises:id`    Delete one exercise by id (Admin role only)
 
-## Examples of requests
+## Examples of assignment 4 requests
+![Снимок экрана (334).png](./images/Снимок%20экрана%20(334).png)
+![Снимок экрана (335).png](./images/Снимок%20экрана%20(335).png)
+![Снимок экрана (336).png](./images/Снимок%20экрана%20(336).png)
+![Снимок экрана (337).png](./images/Снимок%20экрана%20(337).png)
+![Снимок экрана (338).png](./images/Снимок%20экрана%20(338).png)
+![Снимок экрана (339).png](./images/Снимок%20экрана%20(339).png)
+![Снимок экрана (340).png](./images/Снимок%20экрана%20(340).png)
+![Снимок экрана (341).png](./images/Снимок%20экрана%20(341).png)
+
+## Examples of assignment 3 requests
 
 ![Снимок экрана (267).png](./images/Снимок%20экрана%20(267).png)
 ![Снимок экрана (268).png](./images/Снимок%20экрана%20(268).png)

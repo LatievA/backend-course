@@ -12,7 +12,7 @@ router.get('/:id', ctrl.get);          // public
 router.post('/', authenticate, authorize('admin'), [
   body('title').isString().notEmpty(),
   body('duration').isNumeric(),
-  body('difficulty').isIn(['Beginner','Intermediate','Advanced'])
+  body('difficulty').isIn(['Beginner', 'Intermediate', 'Advanced'])
 ], ctrl.create);
 
 router.put('/:id', authenticate, authorize('admin'), ctrl.update);
