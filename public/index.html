@@ -2,15 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Workouts – Assignment 3</title>
+  <title>Assignment 4 – Workouts</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial; padding: 20px; max-width: 900px; margin: auto; }
     input, select, textarea, button {
-      display: block;
-      margin: 6px 0 12px;
+      margin: 4px 0;
+      padding: 6px;
     }
     .workout {
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       padding: 12px;
       margin-bottom: 16px;
       border-radius: 6px;
@@ -18,105 +18,194 @@
     .exercise {
       margin-left: 20px;
       padding: 6px;
-      border-left: 3px solid #ccc;
+      border-left: 3px solid #aaa;
     }
-    small { color: #666; }
+    .admin { background: #f7f7f7; padding: 10px; margin: 10px 0; }
+    .hidden { display: none; }
+    small { color: #555; }
   </style>
 </head>
 <body>
 
-<h1>Workouts</h1>
+<h1>Workouts App (Assignment 4)</h1>
 
-<!-- CREATE WORKOUT -->
-<form id="createWorkoutForm">
-  <h3>Create Workout</h3>
-  <input name="title" placeholder="Title" required>
-  <input name="duration" type="number" placeholder="Duration (min)" required>
-  <select name="difficulty">
+<!-- AUTH -->
+<div id="auth">
+  <h3>Login / Register</h3>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <select id="role">
+    <option value="user">user</option>
+    <option value="admin">admin</option>
+  </select>
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="userInfo" class="hidden">
+  Logged in as: <b id="userEmail"></b> (<span id="userRole"></span>)
+  <button onclick="logout()">Logout</button>
+</div>
+
+<hr>
+
+<!-- ADMIN CREATE WORKOUT -->
+<div id="adminControls" class="admin hidden">
+  <h3>Create Workout (admin)</h3>
+  <input id="wTitle" placeholder="Title">
+  <input id="wDuration" type="number" placeholder="Duration">
+  <select id="wDifficulty">
     <option>Beginner</option>
     <option>Intermediate</option>
     <option>Advanced</option>
   </select>
-  <textarea name="description" placeholder="Description"></textarea>
-  <button>Create Workout</button>
-</form>
+  <textarea id="wDesc" placeholder="Description"></textarea>
+  <button onclick="createWorkout()">Create Workout</button>
+</div>
 
-<hr>
-
+<h2>Workouts</h2>
 <div id="workouts"></div>
 
 <script>
-const workoutsApi = '/api/workouts';
-const exercisesApi = '/api/exercises';
+const API = '/api';
+let token = localStorage.getItem('token');
+let user = JSON.parse(localStorage.getItem('user'));
 
-/* LOAD WORKOUTS */
+updateAuthUI();
+
+/* ---------- AUTH ---------- */
+
+async function register() {
+  const res = await fetch(`${API}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+      role: role.value
+    })
+  });
+  const data = await res.json();
+  if (res.ok) saveAuth(data);
+  else alert(data.message || 'Register failed');
+}
+
+async function login() {
+  const res = await fetch(`${API}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+  const data = await res.json();
+  if (res.ok) saveAuth(data);
+  else alert(data.message || 'Login failed');
+}
+
+function saveAuth(data) {
+  token = data.token;
+  user = data.user;
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
+  updateAuthUI();
+  loadWorkouts();
+}
+
+function logout() {
+  token = null;
+  user = null;
+  localStorage.clear();
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  auth.classList.toggle('hidden', !!user);
+  userInfo.classList.toggle('hidden', !user);
+  adminControls.classList.toggle('hidden', !(user && user.role === 'admin'));
+  if (user) {
+    userEmail.textContent = user.email;
+    userRole.textContent = user.role;
+  }
+}
+
+/* ---------- WORKOUTS ---------- */
+
 async function loadWorkouts() {
-  const res = await fetch(workoutsApi);
+  const res = await fetch(`${API}/workouts`);
   const workouts = await res.json();
+  workoutsDiv(workouts);
+}
 
-  const container = document.getElementById('workouts');
-  container.innerHTML = '';
-
+function workoutsDiv(workouts) {
+  workoutsEl.innerHTML = '';
   workouts.forEach(w => {
     const div = document.createElement('div');
     div.className = 'workout';
-
     div.innerHTML = `
-      <strong>${w.title}</strong> (${w.difficulty}) — ${w.duration} min<br>
-      <small>${new Date(w.createdAt).toLocaleString()}</small>
+      <b>${w.title}</b> (${w.difficulty}) – ${w.duration} min
+      <small><br>${new Date(w.createdAt).toLocaleString()}</small>
       <p>${w.description || ''}</p>
 
+      ${user?.role === 'admin'
+        ? `<button onclick="deleteWorkout('${w._id}')">Delete Workout</button>`
+        : ''}
+
       <h4>Exercises</h4>
-      <div>
-        ${(w.exercises || []).map(ex => `
-          <div class="exercise">
-            ${ex.name} — ${ex.sets} x ${ex.reps}
-            <button onclick="deleteExercise('${ex._id}')">Delete</button>
-          </div>
-        `).join('')}
-      </div>
+      ${(w.exercises || []).map(ex => `
+        <div class="exercise">
+          ${ex.name} – ${ex.sets} x ${ex.reps}
+          ${user?.role === 'admin'
+            ? `<button onclick="deleteExercise('${ex._id}')">Delete</button>`
+            : ''}
+        </div>
+      `).join('')}
 
-      <h4>Add Exercise</h4>
-      <form onsubmit="createExercise(event, '${w._id}')">
-        <input name="name" placeholder="Exercise name" required>
-        <input name="sets" type="number" placeholder="Sets" required>
-        <input name="reps" type="number" placeholder="Reps" required>
-        <button>Add Exercise</button>
-      </form>
+      ${user?.role === 'admin'
+        ? `
+        <form onsubmit="addExercise(event,'${w._id}')">
+          <input name="name" placeholder="Exercise name" required>
+          <input name="sets" type="number" placeholder="Sets" required>
+          <input name="reps" type="number" placeholder="Reps" required>
+          <button>Add Exercise</button>
+        </form>`
+        : ''}
     `;
-
-    container.appendChild(div);
+    workoutsEl.appendChild(div);
   });
 }
 
-/* CREATE WORKOUT */
-document.getElementById('createWorkoutForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-
-  await fetch(workoutsApi, {
+async function createWorkout() {
+  await fetch(`${API}/workouts`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({
-      title: fd.get('title'),
-      duration: Number(fd.get('duration')),
-      difficulty: fd.get('difficulty'),
-      description: fd.get('description')
+      title: wTitle.value,
+      duration: Number(wDuration.value),
+      difficulty: wDifficulty.value,
+      description: wDesc.value
     })
   });
-
-  e.target.reset();
   loadWorkouts();
-});
+}
 
-/* CREATE EXERCISE */
-async function createExercise(e, workoutId) {
+async function deleteWorkout(id) {
+  await fetch(`${API}/workouts/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders()
+  });
+  loadWorkouts();
+}
+
+/* ---------- EXERCISES ---------- */
+
+async function addExercise(e, workoutId) {
   e.preventDefault();
   const fd = new FormData(e.target);
-
-  await fetch(exercisesApi, {
+  await fetch(`${API}/exercises`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({
       name: fd.get('name'),
       sets: Number(fd.get('sets')),
@@ -124,14 +213,24 @@ async function createExercise(e, workoutId) {
       workout: workoutId
     })
   });
-
   loadWorkouts();
 }
 
-/* DELETE EXERCISE */
 async function deleteExercise(id) {
-  await fetch(`${exercisesApi}/${id}`, { method: 'DELETE' });
+  await fetch(`${API}/exercises/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders()
+  });
   loadWorkouts();
+}
+
+/* ---------- HELPERS ---------- */
+
+function authHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
 }
 
 loadWorkouts();

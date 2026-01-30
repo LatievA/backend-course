@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
 async function connect(uri) {
-  await mongoose.connect(uri, {
-    // modern mongoose no longer requires useNewUrlParser/useUnifiedTopology flags
-  });
+  await mongoose.connect(uri, {});
   console.log('MongoDB connected');
 }
 
