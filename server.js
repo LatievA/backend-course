@@ -1,37 +1,36 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 
-const workoutsRouter = require('./routes/workouts');
-const exercisesRouter = require('./routes/exercises');
+const { connect } = require('./config/db');
+const authRoutes = require('./routes/auth');
+const workoutRoutes = require('./routes/workouts');
+const exerciseRoutes = require('./routes/exercises');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// serve frontend if any (optional)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// routes
-app.use('/api/workouts', workoutsRouter);
-app.use('/api/exercises', exercisesRouter);
+// API
+app.use('/api/auth', authRoutes);
+app.use('/api/workouts', workoutRoutes);
+app.use('/api/exercises', exerciseRoutes);
 
 // global error handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  if (res.headersSent) return next(err);
-  res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-});
-
-const PORT = process.env.PORT || 3000;
+app.use(errorHandler);
 
 async function start() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    await connect(process.env.MONGODB_URI);
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
-    console.error('Failed to connect to MongoDB', err);
+    console.error('Startup failure', err);
     process.exit(1);
   }
 }
