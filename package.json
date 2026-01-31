@@ -1,10 +1,12 @@
 {
-  "name": "assignment-3",
+  "name": "workout-tracker",
   "version": "1.0.0",
-  "description": "Assignment 3 of WEB Technologies 2 Course",
-  "main": "server.js",
+  "description": "Full-stack Workout Tracker Application - Track workouts and exercises with user authentication and admin management",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "seed": "node backend/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +23,7 @@
   "homepage": "https://github.com/LatievA/backend-course#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",

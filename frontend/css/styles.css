@@ -1,0 +1,267 @@
+/* Custom styles for Workout Tracker App */
+
+/* General styles */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+}
+
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-weight: 700;
+}
+
+.navbar-brand i {
+    color: var(--primary-color);
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+}
+
+.hero-section h1 {
+    font-weight: 700;
+}
+
+/* Workout cards */
+.workout-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    border-radius: 12px;
+}
+
+.workout-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.workout-card .card-header {
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.workout-card .card-footer {
+    border-radius: 0 0 12px 12px !important;
+}
+
+/* Exercise list */
+.exercise-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.exercise-list .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.exercise-list .list-group-item:first-child {
+    border-top: none;
+}
+
+/* Search section */
+.search-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Modals */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Pagination */
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: none;
+    color: var(--secondary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #adb5bd;
+}
+
+/* Toast container */
+#toast-container {
+    z-index: 1100;
+}
+
+.toast {
+    border-radius: 12px;
+}
+
+/* Loading spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Admin panel button */
+.admin-panel-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    z-index: 1000;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 12px;
+    border: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+
+    .search-section {
+        padding: 1rem;
+    }
+
+    .workout-card .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .workout-card .btn-group .btn {
+        border-radius: 8px !important;
+    }
+
+    .admin-panel-btn {
+        bottom: 1rem;
+        right: 1rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand span {
+        display: none;
+    }
+
+    .btn-group-sm {
+        flex-wrap: wrap;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.workout-card {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Custom scrollbar */
+.exercise-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.exercise-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.exercise-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.exercise-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
