@@ -14,13 +14,15 @@ router.post('/', authenticate, authorize('admin'), [
     body('name').isString().notEmpty().withMessage('Name is required'),
     body('sets').isInt({ min: 1 }).withMessage('Sets must be at least 1'),
     body('reps').isInt({ min: 1 }).withMessage('Reps must be at least 1'),
+    body('description').optional().isString().withMessage('Description must be a string'),
     body('workout').isString().notEmpty().withMessage('Workout ID is required')
 ], ctrl.create);
 
 router.put('/:id', authenticate, authorize('admin'), [
     body('name').optional().isString().notEmpty().withMessage('Name cannot be empty'),
     body('sets').optional().isInt({ min: 1 }).withMessage('Sets must be at least 1'),
-    body('reps').optional().isInt({ min: 1 }).withMessage('Reps must be at least 1')
+    body('reps').optional().isInt({ min: 1 }).withMessage('Reps must be at least 1'),
+    body('description').optional().isString().withMessage('Description must be a string')
 ], ctrl.update);
 
 router.delete('/:id', authenticate, authorize('admin'), ctrl.remove);

@@ -4,6 +4,7 @@ const ExerciseSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     sets: { type: Number, required: true, min: 1 },
     reps: { type: Number, required: true, min: 1 },
+    description: { type: String, trim: true, default: '' },
     workout: { type: mongoose.Schema.Types.ObjectId, ref: 'Workout', required: true }
 }, { timestamps: true });
 

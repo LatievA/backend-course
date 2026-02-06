@@ -19,13 +19,14 @@ exports.register = async (req, res, next) => {
         }
 
         const { email, password, name } = req.body;
-        const existing = await User.findOne({ email });
+        const normalizedEmail = String(email).trim().toLowerCase();
+        const existing = await User.findOne({ email: normalizedEmail });
         if (existing) {
             return res.status(400).json({ message: 'Email already in use' });
         }
 
         // Force role to 'user' - admins can only be created via seed script
-        const user = new User({ email, password, name, role: 'user' });
+        const user = new User({ email: normalizedEmail, password, name, role: 'user' });
         await user.save();
 
         const token = signToken(user);
@@ -46,7 +47,8 @@ exports.login = async (req, res, next) => {
             return res.status(400).json({ message: 'Email and password required' });
         }
 
-        const user = await User.findOne({ email });
+        const normalizedEmail = String(email).trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -55,7 +57,6 @@ exports.login = async (req, res, next) => {
         if (!ok) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-
         const token = signToken(user);
         res.json({
             token,

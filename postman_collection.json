@@ -722,7 +722,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Push-ups\",\n  \"sets\": 3,\n  \"reps\": 15,\n  \"workout\": \"{{workoutId}}\"\n}"
+                            "raw": "{\n  \"name\": \"Push-ups\",\n  \"description\": \"Bodyweight push-ups for chest and triceps\",\n  \"sets\": 3,\n  \"reps\": 15,\n  \"workout\": \"{{workoutId}}\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/exercises",
@@ -808,7 +808,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Diamond Push-ups\",\n  \"sets\": 4,\n  \"reps\": 12\n}"
+                            "raw": "{\n  \"name\": \"Diamond Push-ups\",\n  \"description\": \"Triceps-focused push-up variation\",\n  \"sets\": 4,\n  \"reps\": 12\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/exercises/{{exerciseId}}",

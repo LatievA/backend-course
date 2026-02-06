@@ -55,10 +55,11 @@ export function renderWorkouts(workoutsData) {
                   <span>
                     <strong>${escapeHtml(ex.name)}</strong>
                     <small class="text-muted d-block">${ex.sets} sets × ${ex.reps} reps</small>
+                    ${ex.description ? `<small class="text-muted d-block">${escapeHtml(ex.description)}</small>` : ''}
                   </span>
                   ${admin ? `
                     <div class="btn-group btn-group-sm admin-only">
-                      <button class="btn btn-outline-primary btn-sm" onclick="window.openEditExerciseModal('${ex._id}', '${escapeHtml(ex.name)}', ${ex.sets}, ${ex.reps})" title="Edit">
+                      <button class="btn btn-outline-primary btn-sm" onclick="window.openEditExerciseModal('${ex._id}', '${escapeHtml(ex.name)}', ${ex.sets}, ${ex.reps}, '${escapeHtml(ex.description || '')}')" title="Edit">
                         <i class="bi bi-pencil"></i>
                       </button>
                       <button class="btn btn-outline-danger btn-sm" onclick="window.handleDeleteExercise('${ex._id}')" title="Delete">
@@ -324,6 +325,7 @@ export async function handleAddExercise(event) {
     const form = event.target;
     const workoutId = form.querySelector('#exercise-workout-id').value;
     const name = form.querySelector('#exercise-name').value;
+    const description = form.querySelector('#exercise-description').value;
     const sets = parseInt(form.querySelector('#exercise-sets').value);
     const reps = parseInt(form.querySelector('#exercise-reps').value);
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -332,7 +334,7 @@ export async function handleAddExercise(event) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Adding...';
 
-        await exercisesApi.createExercise({ name, sets, reps, workout: workoutId });
+        await exercisesApi.createExercise({ name, description, sets, reps, workout: workoutId });
 
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('addExerciseModal'));
@@ -353,11 +355,12 @@ export async function handleAddExercise(event) {
 }
 
 // Open edit exercise modal
-window.openEditExerciseModal = function (id, name, sets, reps) {
+window.openEditExerciseModal = function (id, name, sets, reps, description) {
     document.getElementById('edit-exercise-id').value = id;
     document.getElementById('edit-exercise-name').value = name;
     document.getElementById('edit-exercise-sets').value = sets;
     document.getElementById('edit-exercise-reps').value = reps;
+  document.getElementById('edit-exercise-description').value = description || '';
 
     const modal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
     modal.show();
@@ -370,6 +373,7 @@ export async function handleEditExercise(event) {
     const form = event.target;
     const id = form.querySelector('#edit-exercise-id').value;
     const name = form.querySelector('#edit-exercise-name').value;
+    const description = form.querySelector('#edit-exercise-description').value;
     const sets = parseInt(form.querySelector('#edit-exercise-sets').value);
     const reps = parseInt(form.querySelector('#edit-exercise-reps').value);
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -378,7 +382,7 @@ export async function handleEditExercise(event) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
 
-        await exercisesApi.updateExercise(id, { name, sets, reps });
+        await exercisesApi.updateExercise(id, { name, description, sets, reps });
 
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('editExerciseModal'));
